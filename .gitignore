@@ -1,0 +1,6 @@
+# Ignore backup files
+*.OLD
+
+# Ignore any files with API or KEY in the name (case insensitive)
+*[Aa][Pp][Ii]*
+*[Kk][Ee][Yy]*

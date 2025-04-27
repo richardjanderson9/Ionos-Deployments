@@ -1,0 +1,52 @@
+#cloud-config
+
+## **** Change this to the correct hostname, as scripts down the line use it for automated config! ****
+hostname: rj-testing
+
+## ** System Package Management **
+package_update: true
+package_upgrade: true
+apt:
+  preserve_sources_list: true
+  conf: |
+    APT::Get::Upgrade-Allow-New "false";
+    APT::Get::Update::Series "false";
+    Unattended-Upgrade::MinimalSteps "true";
+    Unattended-Upgrade::Only-Security "true";
+  periodic:
+    update_interval: 24
+
+## ** Installs the required packages! **
+packages:
+  ## * Probally not needed, but just in case! *
+  - net-tools
+  - curl
+  - nano
+  - openssh-server
+  - git
+  - tree
+  ## * Core network testing tools *
+  - nmap
+  - jq
+  ## * Required for auditing! *
+  - logwatch
+  - auditd
+  ## * Required for compression! *
+  - xz-utils
+  - 7z
+
+write_files:
+  - path: /opt/rj-project/netdata.conf
+    content: |
+      # Netdata Configuration
+      CHANNEL={randomsettings}
+      TOKEN={randomkey}
+      ROOM={randomkey}
+    permissions: '0400'
+    owner: root:root
+
+runcmd:
+  - git clone https://github.com/richardjanderson9/Ionos-Deployments /opt/rj-project/scripts
+  - chmod +x /opt/rj-project/scripts/initialSetup.sh && bash /opt/rj-project/scripts/initialSetup.sh
+
+reboot: false
